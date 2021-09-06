@@ -1,47 +1,80 @@
 package in.rbofficial.myott.ui.home;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import in.rbofficial.myott.Adapters.MainAdapter;
+import in.rbofficial.myott.Models.MainModel;
 import in.rbofficial.myott.R;
+import in.rbofficial.myott.databinding.FragmentHomeBinding;
 
-import `in`.rbofficial.myott.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
-
-    private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
+    private RecyclerView recyclerView;
+    private MainAdapter adapter;
+    private List<MainModel> list;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+    @SuppressLint("ResourceType")
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        binding = FragmentHomeBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        init();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-        return root;
+        list.add(new MainModel(
+                R.drawable.prime_vdo,
+                "Prime Video",
+                "100"
+        ));
+        list.add(new MainModel(
+                R.drawable.netflix,
+                "Netflix",
+                "210"
+        ));
+        list.add(new MainModel(
+                R.drawable.hot,
+                "Desney + Hotstar",
+                "400"
+        ));
+        list.add(new MainModel(
+                R.drawable.sony,
+                "SonyLIV",
+                "50"
+        ));
+
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+
+
+
+        return view;
+    }
+
+    private void init() {
+        recyclerView = binding.mainView;
+        list = new ArrayList<>();
+        adapter = new MainAdapter(getContext(),list);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        binding=null;
     }
 }
